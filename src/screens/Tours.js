@@ -1,12 +1,11 @@
 import React from 'react';
 import Tour from './Tour';
-const Tours = ({tours=[]}) => {
+const Tours = ({tours=[], removeTour}) => {
 
 
   const listOfTours = tours.map((tour)=>{
-    //{tour} it gives me the possibility to access to all the tour data array
-      if (tour.id, tour.name, tour.info, tour.price) {
-        return <Tour key={tour.id} {...tour}/> 
+    if (tour.id, tour.name, tour.info, tour.price) {
+        return <Tour key={tour.id} {...tour} removeTour={removeTour}/> 
       }
   })
 
