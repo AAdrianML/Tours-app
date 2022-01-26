@@ -1,35 +1,33 @@
 import React, {useEffect, useState} from 'react'
 import Loading from './Loading'
 import Tours from './Tours'
-const url = 'https://course-api.com/react-tours-project'
+import {mainTours,deleteTour} from '../redux/actions/mainTours'
+import {useSelector,useDispatch} from 'react-redux'
 const MainTours = () => {
-
+    const {toursData} = useSelector((state)=>state.mainTours)
     const [loading, setLoading] = useState(true);
     const [tours, setTours] = useState([]);
-  
+    const dispatch = useDispatch();
   
     const removeTour = (id) => {
-    const newTours = tours.filter((tour)=> (tour.id !==id));
-    setTours(newTours)
+    let response = dispatch(deleteTour(tours,id))
+    setTours(response)
     }
+
+    useEffect(()=>{
+      dispatch(mainTours())
+    },[])
+
     useEffect(()=>{
       fetchTours()
-    },[])
+    },[toursData])
   
     const fetchTours = async () =>{
       setLoading(true)
-      let response = await fetch(url)
-      .then((res)=>{
-        return res
-      })
-      .catch((err)=>{
-        return {err:err, errorMessage:`fetchTours error: ${err.message ? err.message : ''}`}
-      })
-      if (response && !response.errorMessage) {
-        response = await  response.json();
-        setTours(response)
+      if (toursData && !toursData.errorMessage && toursData.tours) {
+        setTours(toursData.tours)
       }else{
-        console.log(response)
+        console.log(toursData)
       }
       setLoading(false)
     }
@@ -43,7 +41,7 @@ const MainTours = () => {
           return <main>
             <div className="title">
               <h2>no tours left</h2>
-              <button className='btn' onClick={fetchTours}>refresh</button>
+              <button className='btn' onClick={()=> dispatch(mainTours())}>refresh</button>
             </div>
           </main>
         }
